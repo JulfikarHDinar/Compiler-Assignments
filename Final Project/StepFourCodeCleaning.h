@@ -1,56 +1,6 @@
-/*
-A C source program with single and multiple line comments is given. As the first step toward
-compilation, you need to remove the comments and white space (extra spaces, tabs and newline
-characters). Develop a program that takes as input a file, the given source program, and
-produces a filtered file as stated above. The program must also display both the files.
-*/
-#include <stdio.h>
-
-void omitComments(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]);
-void omitSpaces(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]);
-
-int main(){
-    char c;
-    char sourceFileName[30] = "170204055_AssignmentOne.txt";
-    char tempFileName[30] = "temp.txt";
-    char targetFileName[30] = "170204055_Asm1_Output.txt";
-    FILE *source, *target, *temp;
-
-    /*multi line comment
-    hello world
-    */
-    //  removing comment
-    source = fopen(sourceFileName, "r");
-    temp = fopen(tempFileName, "w");
-    omitComments(source, temp, sourceFileName, tempFileName);
-    fclose(source);
-    fclose(temp);
-
-    //  removing spaces
-    temp = fopen(tempFileName, "r");
-    target = fopen(targetFileName, "w");
-    omitSpaces(temp, target, tempFileName, targetFileName);
-    fclose(temp);
-    fclose(target);
-
-    //  printing in console
-    target = fopen (targetFileName,"r");
-    while( (c = fgetc(target)) != EOF){
-        printf("%c",c);
-    }
-    fclose(target);
-
-    printf("\n\n");
-
-    //  removing text file after operation
-    remove(tempFileName);
-    remove(targetFileName);
-    return 0;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-void omitComments(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]){
+void removeComments(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]){
     char c;
     int slashStart = 0;
     int checkForCommentStop = 0;
@@ -130,23 +80,23 @@ void omitComments(FILE *source, FILE *target, char sourceFileName[30], char targ
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
-void omitSpaces(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]){
+void removeSpaces(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]){
     char c;
     int syntaxStart = 0;
     int syntaxSpace = 0;
 
-    if(source == NULL || target == NULL){
+    char tempFileName[30] = "temp1.txt";
+    FILE *temp;
+    temp = fopen(tempFileName, "w");
+
+    if(source == NULL || temp == NULL){
         printf("\nFile cannot be opened");
     }
     else{
         while( (c = fgetc(source)) != EOF ){
             //removing tab
             if(c == 9){
-                continue;
-            }
-            //removing new line
-            else if(c == 10){
-                syntaxStart = 0;
+                fputc(32,temp);
                 continue;
             }
             //removing extra space from the beginning of a syntax
@@ -161,7 +111,7 @@ void omitSpaces(FILE *source, FILE *target, char sourceFileName[30], char target
             if(syntaxStart = 1){
                 //allowing first space between syntaxes
                 if(c == 32 && syntaxSpace == 0){
-                    fputc(32,target);
+                    fputc(32,temp);
                     syntaxSpace = 1;
                     continue;
                 }
@@ -171,10 +121,41 @@ void omitSpaces(FILE *source, FILE *target, char sourceFileName[30], char target
                 }
             }
             //normal character, no space tendency
-            fputc(c,target);
+            fputc(c,temp);
             syntaxSpace = 0;
         }
     }
+    fputc(' ',temp);
+    fclose(source);
+    fclose(temp);
+
+    //Removing more than one spaces (because of replacing tabs with spaces)
+    syntaxSpace = 0;
+    int codeStart = 0;
+    source = fopen(tempFileName, "r");
+
+    while( (c = fgetc(source)) != EOF ){
+        if(c == 10){
+            fputc(c,target);
+            codeStart = 0;  //setting codestart variable to zero after getting new line
+            continue;
+        }
+        else if(c == 32 && syntaxSpace == 0 && codeStart == 1){          //one space between syntaxes
+            fputc(32,target);
+            syntaxSpace = 1;
+            continue;
+        }
+        else if(c == 32 && syntaxSpace == 1 && codeStart == 1){     //more than one space between syntaxes
+            continue;
+        }
+        else if(c != 32){                                           //any character other than space
+            fputc(c,target);
+            codeStart = 1;
+            syntaxSpace = 0;
+        }
+    }
+
     fclose(source);
     fclose(target);
+    remove(tempFileName);
 }

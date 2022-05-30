@@ -1,0 +1,12 @@
+1 #include<stdio.h>
+2 void func()
+3 {
+4 }
+5 int main(void)
+6 {
+7 int a, b;
+8 printf(“”);
+9 func();
+10 scanf(“”);
+11 return 0;
+12 }

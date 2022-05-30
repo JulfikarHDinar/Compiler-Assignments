@@ -1,0 +1,1 @@
+[unkn #include] [op <] [unkn stdio.h] [op >] [kw int] [id main] [par (] [kw void] [par )] [unkn {printf] [par (] [unkn "Hello"] [par )] [sep ;] [id printf] [par (] [unkn "World"] [par )] [sep ;] [kw return] [num 0] [sep ;] [par }] 

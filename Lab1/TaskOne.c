@@ -1,6 +1,3 @@
-/*
-    Write a program to print the header files used in a source program.
-*/
 #include <stdio.h>
 #include <math.h>
 void headerPrint(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]);

@@ -1,6 +1,3 @@
-/*
-    Write a program to add line numbers to a source program.
-*/
 #include <stdio.h>
 void lineNumberPrint(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]);
 
@@ -23,24 +20,24 @@ int main(){
 void lineNumberPrint(FILE *source, FILE *target, char sourceFileName[30], char targetFileName[30]){
     char c;
     int lineNo = 1;
-    char buffer[20];
-    itoa(lineNo,buffer,10);
+    char lineNoBuffer[20];
+    itoa(lineNo,lineNoBuffer,10);
 
 
     if(source == NULL){
         printf("\nFile cannot be opened");
     }
     else{
-        itoa(lineNo, buffer,10);
-        fputs(buffer,target);
-        fputs(":\t",target);
+        itoa(lineNo, lineNoBuffer,10);
+        fputs(lineNoBuffer,target);
+        fputs(": ",target);
         while( (c = fgetc(source)) != EOF ){
             if( (c == 10) ){
                 fputc(10,target);
                 lineNo++;
-                itoa(lineNo,buffer,10);
-                fputs(buffer,target);
-                fputs(":\t",target);
+                itoa(lineNo,lineNoBuffer,10);
+                fputs(lineNoBuffer,target);
+                fputs(": ",target);
                 continue;
             }
 
